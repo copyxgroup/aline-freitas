@@ -244,3 +244,33 @@ html[data-theme="light"] .pitch{--pitch-red:#b61520;--pitch-tint:#a61520;--pitch
   padding:.8rem 1.3rem;
   opacity:1;
 }
+
+.pitch-guarantee-seal {
+  display: grid;
+  place-content: center;
+  width: 8rem;
+  aspect-ratio: 1;
+  margin: 0 auto 1.15rem;
+  border: .3rem double #fff0d5;
+  border-radius: 50%;
+  background: #a91326;
+  color: #fff;
+  text-align: center;
+  line-height: 1.15;
+}
+.pitch-guarantee-seal strong { font-size: 1.35rem; }
+.pitch-guarantee-seal span { font-size: 1rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pitch-review .pitch-cta,
+  .pitch-compact .pitch-inline-action.pitch-enter .pitch-cta,
+  .pitch-review .pitch-price-large.pitch-enter .pitch-offer-status {
+    animation: pulse-botao-verde 2s ease-out infinite;
+  }
+
+  @keyframes pulse-botao-verde {
+    0%   { box-shadow: 0 0 0 0 rgb(8 115 61 / 45%); }
+    70%  { box-shadow: 0 0 0 12px rgb(8 115 61 / 0%); }
+    100% { box-shadow: 0 0 0 0 rgb(8 115 61 / 0%); }
+  }
+}

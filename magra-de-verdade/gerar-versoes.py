@@ -10,6 +10,10 @@ marker = '<span id="vturb-pitch-marker" class="esconder" aria-hidden="true"></sp
 source = source.replace('</main>', marker + '\n' + pitch + '</main>')
 integration = Path(__file__).with_name('vturb-head.html').read_text()
 source = source.replace('</head>', integration + '</head>', 1)
+player, loader = Path(__file__).with_name('vturb-embed.html').read_text().splitlines()
+source = re.sub(r'(<div class="player" id="player-vturb">).*?(\n    </div>)',
+                lambda match: match[1] + '\n      ' + player + match[2], source, count=1, flags=re.S)
+source = source.replace('</body>', '  ' + loader + '\n</body>', 1)
 source = source.replace('</body>', '  <script src="/pos-pitch.js" defer></script>\n</body>')
 source = source.replace('</head>', '  <link rel="stylesheet" href="/pos-pitch.css">\n</head>')
 
@@ -19,7 +23,7 @@ for slug in ('pv-escura', 'pv-clara'):
         light_pitch = Path(__file__).with_name('pos-pitch-clara.html').read_text()
         page = page.replace(pitch, light_pitch, 1)
         page = page.replace(
-            'Esse Iogurte é um fazedor de milagres, sério. Eu experimentei esse tal Iogurte por 7 dias e já perdi quase todas as minhas roupas',
+            'Esse protocolo é um fazedor de milagres, sério. Eu experimentei esse tal protocolo por 7 dias e já perdi quase todas as minhas roupas',
             'Eu estou usando o protocolo e em 7 dias e já perdi quase todas as minhas roupas kkk',
             1,
         )

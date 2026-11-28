@@ -79,9 +79,8 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
       // Configuração da VSL: use o ID real do SmartPlayer e o tempo em segundos.
       // Exemplo: para 12 min e 30 s, informe delay: 750.
       const listPitch = {
-        'ID_DO_VIDEO_A': { delay: null, utm: 'utm_content=vslA' },
-        'ID_DO_VIDEO_B': { delay: null, utm: 'utm_content=vslB' },
-        'ID_DO_VIDEO_C': { delay: null, utm: 'utm_content=vslC' },
+        '6b0a2ce38a61005a52d5018b': { delay: 5, utm: 'utm_content=vslA' },
+        '6b0a2edff5693da291d78b26': { delay: 5, utm: 'utm_content=vslB' },
       }
       // Preencha quando receber a URL do checkout. Use uma URL HTTPS completa.
       const checkoutUrl = ''
@@ -98,9 +97,11 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
         const link = document.querySelector('[data-checkout-link]')
         const button = document.querySelector('[data-checkout-placeholder]')
         const notice = document.querySelector('[data-checkout-notice]')
-        if (!link || !checkoutUrl) return
+        if (!link) return
+        const target = checkoutUrl || link.getAttribute('href')
+        if (!target) return
         let url
-        try { url = new URL(checkoutUrl) } catch { return }
+        try { url = new URL(target) } catch { return }
         if (url.protocol !== 'https:') return
         for (const [name, value] of new URLSearchParams(activePitch?.utm)) {
           url.searchParams.set(name, value)
@@ -120,11 +121,12 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
             document.querySelector('#player-vturb vturb-smartplayer')
         )
         if (!player || typeof player.displayHiddenElements !== 'function') return
-        const id = detail.config?.id ?? player.config?.id ?? player.id
-        const idWithoutPrefix = typeof id === 'string' ? id.replace(/^vid-/, '') : ''
-        const key = Object.hasOwn(listPitch, id) ? id : idWithoutPrefix
-        if (!key || key.startsWith('ID_DO_VIDEO_') || !Object.hasOwn(listPitch, key)) return
-        const config = listPitch[key]
+        const id = [detail.config?.id, player.config?.id, player.id]
+          .filter((value) => typeof value === 'string')
+          .map((value) => value.replace(/^vid-/, ''))
+          .find((value) => Object.hasOwn(listPitch, value))
+        if (!id) return
+        const config = listPitch[id]
         if (!validDelay(config.delay)) return
 
         // A VTurb revela este marcador no tempo do vídeo, inclusive com persistência.
@@ -152,6 +154,14 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     })()
   </script>
   <link rel="stylesheet" href="/pos-pitch.css">
+  <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+  <link rel="preload" href="https://scripts.converteai.net/4bf18716-f2e2-4dd8-8f4e-ea3c7832dfb6/ab-test/6b0a2fcaf5693da291d78bc4/player.js" as="script">
+  <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+  <link rel="dns-prefetch" href="https://cdn.converteai.net">
+  <link rel="dns-prefetch" href="https://scripts.converteai.net">
+  <link rel="dns-prefetch" href="https://images.converteai.net">
+  <link rel="dns-prefetch" href="https://m3u8.vturb.net">
+  <link rel="dns-prefetch" href="https://license.vturb.com">
 </head>
 <body>
 <main>
@@ -171,11 +181,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
 
   <section class="video" aria-label="Vídeo">
     <div class="player" id="player-vturb">
-      <!-- Substitua o bloco video-preview pelo embed oficial da Vturb. -->
-      <div class="video-preview">
-        <img src="/capa-vsl.webp" alt="Aline Freitas sentada no sofá, segurando um livro" width="560" height="994" fetchpriority="high">
-        <p class="video-note">Prévia da capa · vídeo em preparação</p>
-      </div>
+      <vturb-smartplayer id="ab-6b0a2fcaf5693da291d78bc4" style="display:block;margin:0 auto;width:100%"></vturb-smartplayer>
     </div>
   </section>
 
@@ -192,12 +198,12 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     <ul><li class="comment">
       <span class="avatar"><img src="/avatares/feira.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Camila Oliveira</strong><p>Juro que achei que era só mais um daqueles vídeos loooongos e chatos. Parabéns, Fernado, por compartilhar algo que realmente FUNCIONA!</p>
+        <strong>Camila Oliveira</strong><p>Juro que achei que era só mais um daqueles vídeos loooongos e chatos. Parabéns, Aline, por compartilhar algo que realmente FUNCIONA!</p>
         <div class="comment-meta"><span>4 h</span><button type="button" data-reply>Responder</button><span><span data-count>13</span> curtidas</span></div>
         <details open><summary>Respostas (4)</summary><ul class="replies"><li class="comment">
       <span class="avatar"><img src="/avatares/montanha.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Marcos Fernandes</strong><p>O Fernando é top demais 👏</p>
+        <strong>Marcos Fernandes</strong><p>A Aline é top demais 👏</p>
         <div class="comment-meta"><span>2 h</span><button type="button" data-reply>Responder</button><span><span data-count>15</span> curtidas</span></div>
 
       </div>
@@ -205,7 +211,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/escritorio.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Marcelo Santos</strong><p>Esse Iogurte é um fazedor de milagres, sério. Eu experimentei esse tal Iogurte por 7 dias e já perdi quase todas as minhas roupas</p>
+        <strong>Marcelo Santos</strong><p>Esse protocolo é um fazedor de milagres, sério. Eu experimentei esse tal protocolo por 7 dias e já perdi quase todas as minhas roupas</p>
         <div class="comment-meta"><span>1 h</span><button type="button" data-reply>Responder</button><span><span data-count>10</span> curtidas</span></div>
 
       </div>
@@ -256,7 +262,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/copacabana.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Mariana Pereira</strong><p>Parabéns, Fernando! Com tantos golpes online, é raro ver algo que realmente seja útil. Você merece todo o sucesso e muito mais 👏👏</p>
+        <strong>Mariana Pereira</strong><p>Parabéns, Aline! Com tantos golpes online, é raro ver algo que realmente seja útil. Você merece todo o sucesso e muito mais 👏👏</p>
         <div class="comment-meta"><span>45 m</span><button type="button" data-reply>Responder</button><span><span data-count>37</span> curtidas</span></div>
 
       </div>
@@ -264,7 +270,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/livraria.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Larissa Martins</strong><p>Fernando, venho te acompanhando há anos, mas esse segredo do iogurte bariátrico é de longe a sua melhor dica. Eu tenho estudado isso diariamente há 3 meses e agora me sinto mais forte que meus filhos 😂😂</p>
+        <strong>Larissa Martins</strong><p>Aline, venho te acompanhando há anos, mas esse segredo do protocolo bariátrico é de longe a sua melhor dica. Eu tenho estudado isso diariamente há 3 meses e agora me sinto mais forte que meus filhos 😂😂</p>
         <div class="comment-meta"><span>32 m</span><button type="button" data-reply>Responder</button><span><span data-count>14</span> curtidas</span></div>
 
       </div>
@@ -272,7 +278,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/praia-barba.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Felipe Lima</strong><p>Estou tão feliz por ter assistido ao vídeo até o fim! Achei que poderia ser mais um truque da internet, mas agora vejo que é legítimo. Vou começar a receita do Iogurte Bariátrico amanhã 😯</p>
+        <strong>Felipe Lima</strong><p>Estou tão feliz por ter assistido ao vídeo até o fim! Achei que poderia ser mais um truque da internet, mas agora vejo que é legítimo. Vou começar a receita do protocolo Bariátrico amanhã 😯</p>
         <div class="comment-meta"><span>30 m</span><button type="button" data-reply>Responder</button><span><span data-count>17</span> curtidas</span></div>
 
       </div>
@@ -280,7 +286,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/varanda.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Fabrícia Almeida</strong><p>Fernando, você é MARAVILHOSO! Isso pode ter feito a gordura da barriga da minha mãe desaparecer!! Compartilhei seu vídeo com toda a minha família e amigos.</p>
+        <strong>Fabrícia Almeida</strong><p>Aline, você é MARAVILHOSA! Isso pode ter feito a gordura da barriga da minha mãe desaparecer!! Compartilhei seu vídeo com toda a minha família e amigos.</p>
         <div class="comment-meta"><span>10 m</span><button type="button" data-reply>Responder</button><span><span data-count>5</span> curtidas</span></div>
 
       </div>
@@ -288,7 +294,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/jardim.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Beatriz Carvalho</strong><p>Que receita de iogurte é essa?</p>
+        <strong>Beatriz Carvalho</strong><p>Que receita de protocolo é essa?</p>
         <div class="comment-meta"><span>1 h</span><button type="button" data-reply>Responder</button><span><span data-count>13</span> curtidas</span></div>
         <details open><summary>Respostas (3)</summary><ul class="replies"><li class="comment">
       <span class="avatar"><img src="/avatares/montanha.webp" alt="" width="128" height="128" loading="lazy"></span>
@@ -328,8 +334,8 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
 <section  class="pitch-section pitch-overview pitch-copy pitch-red-panel"><header><h2>Desinflama seu corpo e faça seu intestino produzir o GLP-1 e o GIP de forma 100% natural em dias.</h2></header><p>Com um protocolo personalizado de chás. Sem passar fome e sem gastar R$3 mil por mês com mounjaro.</p><article class="pitch-card pitch-accent-card"><h3>Funciona mesmo que você:</h3><ul class="pitch-checks"><li>Tem um dia muito corrido e não tem tempo para dietas e exercícios.</li><li>Tenha filhos, esteja na menopausa e com o metabolismo lento.</li><li>Já tentou fazer jejum, contar calorias ou academia e o peso travava.</li><li>Ganha peso muito fácil e é difícil para perder.</li></ul></article><p>Esse protocolo personalizado é focado para mulheres acima dos 40, 50, 60 e 70 anos que têm problemas com inchaço e inflamação.</p><h3>Ele já ajudou minhas pacientes a:</h3><ul class="pitch-checks"><li>Desinchar, acabar com a inflamação corporal e lipedema.</li><li>Melhorar a digestão e o funcionamento do intestino.</li><li>Voltar a usar roupas sem ficar com a barriga aparecendo.</li><li>Deixar a pele mais firme e eliminar dores nas costas e joelhos.</li><li>Aumentar a libido e melhorar a relação com o marido.</li></ul><p>Como aconteceu com Maria de fatima, elenir e tantas alunas que seguiram o protocolo por alguns dias. Os resultados variam de pessoa para pessoa.</p></section>
 <section  class="pitch-section pitch-copy"><header><h2>O que você ganha ao entrar no Protocolo Magra de Verdade Personalizado.</h2></header><p>Você recebe o protocolo personalizado com tudo que você precisa para limpar seu corpo e ativar o GLP-1 e o GIP fazendo seu corpo queimar gordura de forma natural.</p><div class="pitch-grid"><article class="pitch-card "><h3>Aplicativo Magra de Verdade.</h3><p>Todas as receitas personalizadas que você vai precisar para ser magra de verdade.</p></article><article class="pitch-card "><p>Lipo Sem Cortes.</p><p>No Controle da Menopausa.</p><p>Drenagem Caseira.</p><p>Fonte da Juventude.</p><p>Pernas dos Sonhos.</p></article><article class="pitch-card "><h3>Acompanhamento da equipe no whatsApp.</h3><p>Você terá acompanhamento 24 horas por dia pela minha equipe. Tire dúvidas, mande fotos e receba orientações em tempo real. Você não fica sozinha nenhum dia.</p></article><article class="pitch-card "><h3>Acesso imediato e vitalício, com atualizações futuras.</h3><p>Você receberá tudo no seu gmail na mesma hora.</p></article></div></section>
 <section  class="pitch-section pitch-muted pitch-copy"><header><h2>Como o protocolo personalizado vai te fazer perder peso.</h2></header><ol class="pitch-timeline"><li class="pitch-card"><h3>Desinflamação</h3><p>Os primeiros chás são anti-inflamatórios naturais que acaba com as toxinas no intestino, desinflama seu corpo e tira ele do “modo sobrevivência”</p><p>Muitas Pacientes perceberam:</p><ul class="pitch-checks"><li>Barriga desinchando.</li><li>Intestino mais leve após as refeições.</li><li>Melhora no humor e bem estar.</li></ul></li><li class="pitch-card"><h3>Corpo Livre</h3><p>Após alguns dias, você já vai sentir seu corpo livre de inflamação, inchaço e lipedema. É aqui que ele começa a queimar gordura de forma automática. É normal você notar suas calças mais frouxas e a pele mais firme.</p></li><li class="pitch-card"><h3>Controle do corpo</h3><p>Agora, você já vai notar diversas diferenças, e vai ter total controle com o seu corpo.</p><p>Você vai notar:</p><ul class="pitch-checks"><li>Barriga mais sequinha.</li><li>Sem excesso de pele.</li><li>Mais energia e disposição.</li><li>Melhora no sono e humor.</li></ul></li></ol><article class="pitch-card pitch-comparison pitch-accent-card pitch-red-panel"><h3>A diferença para o Mounjaro</h3><p>O Mounjaro imita artificialmente os hormônios GLP-1 e GIP. Funciona enquanto você aplica ele, mas depois você para de aplicar, você ganha ainda mais peso porque seu corpo parou de produzir os hormônios. Diferente do protocolo magra de verdade que limpa seu intestino e com o intestino limpo, seu corpo produz naturalmente os mesmos hormônios que o Mounjaro tenta imitar.</p><ul class="pitch-checks"><li>Primeiro desinflama seu intestino</li><li>Só então ajuda o próprio corpo a voltar a produzir o GLP-1 e o GIP</li><li>Com ervas que custam alguns reais por mês, e não mais de R$2.500 por mês</li></ul></article></section>
-<section id="oferta" class="pitch-section pitch-band"><header><p class="pitch-label">OFERTA ESPECIAL DE HOJE</p><h2>Quanto deveria custar tudo isso ?</h2></header><dl class="pitch-values"><div><dt>Consulta particular com a Dra. Aline Freitas:</dt><dd><s>R$2000</s></dd></div><div><dt>Acompanhamento semanal Protocolo 100% personalizado Suporte 24h no WhatsApp</dt><dd><s>R$1000</s></dd></div><div><dt>Bônus exclusivos antes liberados somente para pacientes particulares.</dt><dd><s>R$500</s></dd></div></dl><div class="pitch-card pitch-price pitch-price-large"><p class="pitch-offer-name">HOJE VOCÊ VAI APRENDER A SER MAGRA DE VERDADE COM O PROTOCOLO 100% PERSONALIZADO, COM TODOS OS PRESENTES, POR APENAS:</p><p class="pitch-price-context">Em até</p><h3><span class="pitch-installments">10× de</span> <span class="pitch-installment-value">R$ 9,90</span></h3><p class="pitch-price-context">ou</p><p class="pitch-cash"><strong>R$ 97</strong> <span>à vista</span></p><p class="pitch-price-detail">É muito menos que um lanche na padaria por mês, e muito menos do que R$3 mil reais mensais com o Mounjaro.</p><button type="button" class="pitch-cta pitch-offer-status smartplayer-click-event" data-checkout-placeholder disabled>Quero começar agora</button><a class="pitch-cta pitch-offer-status smartplayer-click-event" data-checkout-link hidden>Quero começar agora</a><p class="pitch-price-footnote">Acesso imediato e vitalício – compra 100% segura</p><p class="pitch-price-footnote" data-checkout-notice>Checkout em preparação</p></div></section>
-<section  class="pitch-section pitch-muted pitch-copy"><div class="pitch-grid"><article class="pitch-card "><h3>Garantia total de 3 semanas: O risco é todo da Aline</h3><p>Você pode:</p><ul class="pitch-checks"><li>Usar o aplicativo por 3 semanas</li><li>Tirar todas dúvidas com a equipe no WhatsApp</li><li>Acessar todos os bônus</li></ul><p>Se sentir que não valeu a pena, basta pedir o reembolso à equipe ou direto na plataforma Sem perguntas. Sem Burocracia, Seu dinheiro de volta.</p><p class="pitch-review-note">Confirmar a garantia: o documento também informa 30 dias.</p></article><article class="pitch-card "><h3>Compra 100% segura</h3><p>O pagamento é feito por uma das maiores plataformas de produtos digitais da América Latina, e o acesso chega em segundos no seu WhatsApp ou Gmail. Sua compra é:</p><ul class="pitch-checks"><li>protegida;</li><li>criptografada;</li><li>com garantia oficial da plataforma.</li></ul></article></div></section>
+<section id="oferta" class="pitch-section pitch-band"><header><p class="pitch-label">OFERTA ESPECIAL DE HOJE</p><h2>Quanto deveria custar tudo isso ?</h2></header><dl class="pitch-values"><div><dt>Consulta particular com a Dra. Aline Freitas:</dt><dd><s>R$2000</s></dd></div><div><dt>Acompanhamento semanal Protocolo 100% personalizado Suporte 24h no WhatsApp</dt><dd><s>R$1000</s></dd></div><div><dt>Bônus exclusivos antes liberados somente para pacientes particulares.</dt><dd><s>R$500</s></dd></div></dl><div class="pitch-card pitch-price pitch-price-large"><p class="pitch-offer-name">HOJE VOCÊ VAI APRENDER A SER MAGRA DE VERDADE COM O PROTOCOLO 100% PERSONALIZADO, COM TODOS OS PRESENTES, POR APENAS:</p><p class="pitch-price-context">Em até</p><h3><span class="pitch-installments">10× de</span> <span class="pitch-installment-value">R$ 9,70</span></h3><p class="pitch-price-context">ou</p><p class="pitch-cash"><strong>R$ 97</strong> <span>à vista</span></p><p class="pitch-price-detail">É muito menos que um lanche na padaria por mês, e muito menos do que R$3 mil reais mensais com o Mounjaro.</p><button type="button" class="pitch-cta pitch-offer-status smartplayer-click-event" data-checkout-placeholder disabled>Quero começar agora</button><a class="pitch-cta pitch-offer-status smartplayer-click-event" data-checkout-link hidden>Quero começar agora</a><p class="pitch-price-footnote">Acesso imediato e vitalício – compra 100% segura</p><p class="pitch-price-footnote" data-checkout-notice>Checkout em preparação</p></div></section>
+<section  class="pitch-section pitch-muted pitch-copy"><div class="pitch-grid"><article class="pitch-card "><div class="pitch-guarantee-seal"><strong>30 dias</strong><span>de garantia</span></div><h3>Garantia de 30 dias</h3><p>Você pode:</p><ul class="pitch-checks"><li>Usar o aplicativo durante o prazo de garantia</li><li>Tirar todas dúvidas com a equipe no WhatsApp</li><li>Acessar todos os bônus</li></ul><p>Se sentir que não valeu a pena, basta pedir o reembolso à equipe ou direto na plataforma Sem perguntas. Sem Burocracia, Seu dinheiro de volta.</p></article><article class="pitch-card "><h3>Compra 100% segura</h3><p>O pagamento é feito por uma das maiores plataformas de produtos digitais da América Latina, e o acesso chega em segundos no seu WhatsApp ou Gmail. Sua compra é:</p><ul class="pitch-checks"><li>protegida;</li><li>criptografada;</li><li>com garantia oficial da plataforma.</li></ul></article></div></section>
 <section  class="pitch-section pitch-copy"><header><h2>Recapitulando</h2></header><article class="pitch-card pitch-recap"><p>Hoje você recebe:</p><ul class="pitch-checks"><li>Aplicativo Magra de verdade completo: Todos os chás personalizados.</li><li>Acompanhamento da equipe no WhatsApp;</li><li>Acesso imediato e vitalício a:</li></ul><ul class="pitch-checks"><li>Lipo Sem Cortes.</li><li>No Controle da Menopausa.</li><li>Drenagem Caseira.</li><li>Fonte da Juventude.</li><li>Pernas dos Sonhos.</li></ul><p>Tudo isso com 30 dias de garantia.</p></article></section>
 <section  class="pitch-section pitch-band pitch-copy"><header><h2>CORPO INFLAMADO NÃO EMAGRECE</h2></header><p>Cada dia que passa seu corpo está ficando cada vez mais inflamado atrasando cada vez mais seu corpo dos sonhos. Garanta agora seu acesso ao Protocolo Magra de Verdade Personalizado e começe a emagrecer hoje</p><a class="pitch-cta" href="#oferta">Quero meu Protocolo Magra de Verdade Personalizado Agora</a></section>
 <section  class="pitch-section pitch-muted pitch-copy"><header><h2>QUEM CRIOU O PROTOCOLO MAGRA DE VERDADE?</h2></header><article class="pitch-card pitch-author"><img src="/aline.webp" width="192" height="192" loading="lazy" alt="Retrato de Aline Freitas"><div><h3>Dra. Aline Freitas</h3><p>O Protocolo Magra de Verdade Personalizado foi criado pela Aline Freitas, especialista em nutrição focada em emagrecimento de mulheres acima dos 40 anos.</p><p>Ela tem 800 mil seguidores no instagram, já ajudou mais de 36 mil mulheres a emagrecerem, já publicou diversos artigos científicos em todo mundo, participou de diversas palestras em vários países.</p><p>Mas existe um detalhe importante na história dela, há 20 anos atrás, já nutróloga, enfrenta diversos desafios para emagrecer, passou até 40 quilos acima do peso.</p><p>Até que ela decidiu estudar além do que foi passado em sua faculdade, mergulhou em mais de 2 mil estudos científicos, leu mais de 1500 livros relacionados a emagrecimento e chegou a conclusão que poucos profissionais explicam para mulheres: Na maioria das vezes quando ocorre o acúmulo de gordura corporal, não é genética, falta de disciplina ou má alimentação, é o corpo que antes de acumular gordura já estava acumulando toxinas por vários anos, toxinas que deixam o corpo inflamado e com diversos outros problemas.</p><p>A partir dessa descoberta surgiu o Protocolo Magra de Verdade Personalizado, uma sequência de chás naturais que atuam diretamente na necessidade da pessoa que está tomando. Hoje, já foram mais de 36 mil mulheres que conseguiram emagrecer através da Aline, você pode ser a próxima.</p></div></article></section>
@@ -394,5 +400,6 @@ comments.addEventListener('click', async (event) => {
 })
 </script>
   <script src="/pos-pitch.js" defer></script>
+  <script src="https://scripts.converteai.net/4bf18716-f2e2-4dd8-8f4e-ea3c7832dfb6/ab-test/6b0a2fcaf5693da291d78bc4/player.js" async></script>
 </body>
 </html>

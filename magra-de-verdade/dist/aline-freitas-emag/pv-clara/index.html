@@ -87,9 +87,8 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
       // Configuração da VSL: use o ID real do SmartPlayer e o tempo em segundos.
       // Exemplo: para 12 min e 30 s, informe delay: 750.
       const listPitch = {
-        'ID_DO_VIDEO_A': { delay: null, utm: 'utm_content=vslA' },
-        'ID_DO_VIDEO_B': { delay: null, utm: 'utm_content=vslB' },
-        'ID_DO_VIDEO_C': { delay: null, utm: 'utm_content=vslC' },
+        '6b0a2ce38a61005a52d5018b': { delay: 5, utm: 'utm_content=vslA' },
+        '6b0a2edff5693da291d78b26': { delay: 5, utm: 'utm_content=vslB' },
       }
       // Preencha quando receber a URL do checkout. Use uma URL HTTPS completa.
       const checkoutUrl = ''
@@ -106,9 +105,11 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
         const link = document.querySelector('[data-checkout-link]')
         const button = document.querySelector('[data-checkout-placeholder]')
         const notice = document.querySelector('[data-checkout-notice]')
-        if (!link || !checkoutUrl) return
+        if (!link) return
+        const target = checkoutUrl || link.getAttribute('href')
+        if (!target) return
         let url
-        try { url = new URL(checkoutUrl) } catch { return }
+        try { url = new URL(target) } catch { return }
         if (url.protocol !== 'https:') return
         for (const [name, value] of new URLSearchParams(activePitch?.utm)) {
           url.searchParams.set(name, value)
@@ -128,11 +129,12 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
             document.querySelector('#player-vturb vturb-smartplayer')
         )
         if (!player || typeof player.displayHiddenElements !== 'function') return
-        const id = detail.config?.id ?? player.config?.id ?? player.id
-        const idWithoutPrefix = typeof id === 'string' ? id.replace(/^vid-/, '') : ''
-        const key = Object.hasOwn(listPitch, id) ? id : idWithoutPrefix
-        if (!key || key.startsWith('ID_DO_VIDEO_') || !Object.hasOwn(listPitch, key)) return
-        const config = listPitch[key]
+        const id = [detail.config?.id, player.config?.id, player.id]
+          .filter((value) => typeof value === 'string')
+          .map((value) => value.replace(/^vid-/, ''))
+          .find((value) => Object.hasOwn(listPitch, value))
+        if (!id) return
+        const config = listPitch[id]
         if (!validDelay(config.delay)) return
 
         // A VTurb revela este marcador no tempo do vídeo, inclusive com persistência.
@@ -160,6 +162,14 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     })()
   </script>
   <link rel="stylesheet" href="/pos-pitch.css">
+  <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+  <link rel="preload" href="https://scripts.converteai.net/4bf18716-f2e2-4dd8-8f4e-ea3c7832dfb6/ab-test/6b0a2fcaf5693da291d78bc4/player.js" as="script">
+  <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+  <link rel="dns-prefetch" href="https://cdn.converteai.net">
+  <link rel="dns-prefetch" href="https://scripts.converteai.net">
+  <link rel="dns-prefetch" href="https://images.converteai.net">
+  <link rel="dns-prefetch" href="https://m3u8.vturb.net">
+  <link rel="dns-prefetch" href="https://license.vturb.com">
 </head>
 <body>
 <main>
@@ -179,11 +189,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
 
   <section class="video" aria-label="Vídeo">
     <div class="player" id="player-vturb">
-      <!-- Substitua o bloco video-preview pelo embed oficial da Vturb. -->
-      <div class="video-preview">
-        <img src="/capa-vsl.webp" alt="Aline Freitas sentada no sofá, segurando um livro" width="560" height="994" fetchpriority="high">
-        <p class="video-note">Prévia da capa · vídeo em preparação</p>
-      </div>
+      <vturb-smartplayer id="ab-6b0a2fcaf5693da291d78bc4" style="display:block;margin:0 auto;width:100%"></vturb-smartplayer>
     </div>
   </section>
 
@@ -200,12 +206,12 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     <ul><li class="comment">
       <span class="avatar"><img src="/avatares/feira.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Camila Oliveira</strong><p>Juro que achei que era só mais um daqueles vídeos loooongos e chatos. Parabéns, Fernado, por compartilhar algo que realmente FUNCIONA!</p>
+        <strong>Camila Oliveira</strong><p>Juro que achei que era só mais um daqueles vídeos loooongos e chatos. Parabéns, Aline, por compartilhar algo que realmente FUNCIONA!</p>
         <div class="comment-meta"><span>4 h</span><button type="button" data-reply>Responder</button><span><span data-count>13</span> curtidas</span></div>
         <details open><summary>Respostas (4)</summary><ul class="replies"><li class="comment">
       <span class="avatar"><img src="/avatares/montanha.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Marcos Fernandes</strong><p>O Fernando é top demais 👏</p>
+        <strong>Marcos Fernandes</strong><p>A Aline é top demais 👏</p>
         <div class="comment-meta"><span>2 h</span><button type="button" data-reply>Responder</button><span><span data-count>15</span> curtidas</span></div>
 
       </div>
@@ -264,7 +270,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/copacabana.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Mariana Pereira</strong><p>Parabéns, Fernando! Com tantos golpes online, é raro ver algo que realmente seja útil. Você merece todo o sucesso e muito mais 👏👏</p>
+        <strong>Mariana Pereira</strong><p>Parabéns, Aline! Com tantos golpes online, é raro ver algo que realmente seja útil. Você merece todo o sucesso e muito mais 👏👏</p>
         <div class="comment-meta"><span>45 m</span><button type="button" data-reply>Responder</button><span><span data-count>37</span> curtidas</span></div>
 
       </div>
@@ -272,7 +278,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/livraria.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Larissa Martins</strong><p>Fernando, venho te acompanhando há anos, mas esse segredo do iogurte bariátrico é de longe a sua melhor dica. Eu tenho estudado isso diariamente há 3 meses e agora me sinto mais forte que meus filhos 😂😂</p>
+        <strong>Larissa Martins</strong><p>Aline, venho te acompanhando há anos, mas esse segredo do protocolo bariátrico é de longe a sua melhor dica. Eu tenho estudado isso diariamente há 3 meses e agora me sinto mais forte que meus filhos 😂😂</p>
         <div class="comment-meta"><span>32 m</span><button type="button" data-reply>Responder</button><span><span data-count>14</span> curtidas</span></div>
 
       </div>
@@ -280,7 +286,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/praia-barba.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Felipe Lima</strong><p>Estou tão feliz por ter assistido ao vídeo até o fim! Achei que poderia ser mais um truque da internet, mas agora vejo que é legítimo. Vou começar a receita do Iogurte Bariátrico amanhã 😯</p>
+        <strong>Felipe Lima</strong><p>Estou tão feliz por ter assistido ao vídeo até o fim! Achei que poderia ser mais um truque da internet, mas agora vejo que é legítimo. Vou começar a receita do protocolo Bariátrico amanhã 😯</p>
         <div class="comment-meta"><span>30 m</span><button type="button" data-reply>Responder</button><span><span data-count>17</span> curtidas</span></div>
 
       </div>
@@ -288,7 +294,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/varanda.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Fabrícia Almeida</strong><p>Fernando, você é MARAVILHOSO! Isso pode ter feito a gordura da barriga da minha mãe desaparecer!! Compartilhei seu vídeo com toda a minha família e amigos.</p>
+        <strong>Fabrícia Almeida</strong><p>Aline, você é MARAVILHOSA! Isso pode ter feito a gordura da barriga da minha mãe desaparecer!! Compartilhei seu vídeo com toda a minha família e amigos.</p>
         <div class="comment-meta"><span>10 m</span><button type="button" data-reply>Responder</button><span><span data-count>5</span> curtidas</span></div>
 
       </div>
@@ -296,7 +302,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
     </li><li class="comment">
       <span class="avatar"><img src="/avatares/jardim.webp" alt="" width="128" height="128" loading="lazy"></span>
       <div class="comment-body">
-        <strong>Beatriz Carvalho</strong><p>Que receita de iogurte é essa?</p>
+        <strong>Beatriz Carvalho</strong><p>Que receita de protocolo é essa?</p>
         <div class="comment-meta"><span>1 h</span><button type="button" data-reply>Responder</button><span><span data-count>13</span> curtidas</span></div>
         <details open><summary>Respostas (3)</summary><ul class="replies"><li class="comment">
       <span class="avatar"><img src="/avatares/montanha.webp" alt="" width="128" height="128" loading="lazy"></span>
@@ -419,7 +425,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
   <p class="pitch-offer-name">Protocolo personalizado completo com todos os bônus</p>
   <h3>
     <span class="pitch-installments">10× de</span>
-    <span class="pitch-installment-value">R$&nbsp;9,90</span>
+    <span class="pitch-installment-value">R$&nbsp;9,70</span>
   </h3>
   <p class="pitch-price-context">ou</p>
   <p class="pitch-cash"><strong>R$&nbsp;97</strong> <span>à vista</span></p>
@@ -431,6 +437,7 @@ li:nth-child(3n) .avatar{background:#2c3933;color:#d3eddb}
 
   <section class="pitch-section">
     <header><h2>Pagamento e garantia</h2></header>
+    <div class="pitch-guarantee-seal"><strong>30 dias</strong><span>de garantia</span></div>
     <div class="pitch-card">
       <p>Você poderá escolher entre o pagamento à vista e o parcelado quando o checkout estiver disponível. O protocolo tem garantia de 30 dias.</p>
     </div>
@@ -520,5 +527,6 @@ comments.addEventListener('click', async (event) => {
 })
 </script>
   <script src="/pos-pitch.js" defer></script>
+  <script src="https://scripts.converteai.net/4bf18716-f2e2-4dd8-8f4e-ea3c7832dfb6/ab-test/6b0a2fcaf5693da291d78bc4/player.js" async></script>
 </body>
 </html>

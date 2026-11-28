@@ -13,9 +13,8 @@
       // Configuração da VSL: use o ID real do SmartPlayer e o tempo em segundos.
       // Exemplo: para 12 min e 30 s, informe delay: 750.
       const listPitch = {
-        'ID_DO_VIDEO_A': { delay: null, utm: 'utm_content=vslA' },
-        'ID_DO_VIDEO_B': { delay: null, utm: 'utm_content=vslB' },
-        'ID_DO_VIDEO_C': { delay: null, utm: 'utm_content=vslC' },
+        '6b0a2ce38a61005a52d5018b': { delay: 5, utm: 'utm_content=vslA' },
+        '6b0a2edff5693da291d78b26': { delay: 5, utm: 'utm_content=vslB' },
       }
       // Preencha quando receber a URL do checkout. Use uma URL HTTPS completa.
       const checkoutUrl = ''
@@ -32,9 +31,11 @@
         const link = document.querySelector('[data-checkout-link]')
         const button = document.querySelector('[data-checkout-placeholder]')
         const notice = document.querySelector('[data-checkout-notice]')
-        if (!link || !checkoutUrl) return
+        if (!link) return
+        const target = checkoutUrl || link.getAttribute('href')
+        if (!target) return
         let url
-        try { url = new URL(checkoutUrl) } catch { return }
+        try { url = new URL(target) } catch { return }
         if (url.protocol !== 'https:') return
         for (const [name, value] of new URLSearchParams(activePitch?.utm)) {
           url.searchParams.set(name, value)
@@ -54,11 +55,12 @@
             document.querySelector('#player-vturb vturb-smartplayer')
         )
         if (!player || typeof player.displayHiddenElements !== 'function') return
-        const id = detail.config?.id ?? player.config?.id ?? player.id
-        const idWithoutPrefix = typeof id === 'string' ? id.replace(/^vid-/, '') : ''
-        const key = Object.hasOwn(listPitch, id) ? id : idWithoutPrefix
-        if (!key || key.startsWith('ID_DO_VIDEO_') || !Object.hasOwn(listPitch, key)) return
-        const config = listPitch[key]
+        const id = [detail.config?.id, player.config?.id, player.id]
+          .filter((value) => typeof value === 'string')
+          .map((value) => value.replace(/^vid-/, ''))
+          .find((value) => Object.hasOwn(listPitch, value))
+        if (!id) return
+        const config = listPitch[id]
         if (!validDelay(config.delay)) return
 
         // A VTurb revela este marcador no tempo do vídeo, inclusive com persistência.
@@ -85,3 +87,11 @@
       })
     })()
   </script>
+  <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+  <link rel="preload" href="https://scripts.converteai.net/4bf18716-f2e2-4dd8-8f4e-ea3c7832dfb6/ab-test/6b0a2fcaf5693da291d78bc4/player.js" as="script">
+  <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+  <link rel="dns-prefetch" href="https://cdn.converteai.net">
+  <link rel="dns-prefetch" href="https://scripts.converteai.net">
+  <link rel="dns-prefetch" href="https://images.converteai.net">
+  <link rel="dns-prefetch" href="https://m3u8.vturb.net">
+  <link rel="dns-prefetch" href="https://license.vturb.com">
